@@ -1,0 +1,30 @@
+#%RAML 1.0
+title: Customer Process API
+version: 1.0.0
+description: Process API to normalize customer payloads from System APIs into a canonical customer object.
+
+/customers/process:
+  post:
+    description: Process a customer payload and return canonical customer JSON
+    body:
+      application/json:
+      application/xml:
+    responses:
+      200:
+        body:
+          application/json:
+            type: !include customer-canonical.raml
+      400:
+        body:
+          application/json: 
+            example: |
+              {
+                "status": 400,
+                "error": "Validation failed",
+                "details": [
+                  "customerId or externalId is required",
+                  "firstName is required",
+                  "lastName is required",
+                  "email is required"
+                ]
+              }

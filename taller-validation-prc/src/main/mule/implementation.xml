@@ -4,11 +4,32 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
 	<sub-flow name="validate-input" doc:id="5d0cedea-fa79-40fa-8f14-cd56e0f5a7f7" >
-		<ee:transform doc:name="Validate Input Format" doc:id="921d019c-63f7-4b57-8f4c-b0165a611ade" >
-			<ee:message >
+		<try doc:name="Try" doc:id="660cf16e-28fd-4a8a-a0c7-51d3d9bca344" >
+			<ee:transform doc:name="Validate Input Format" doc:id="921d019c-63f7-4b57-8f4c-b0165a611ade">
+			<ee:message>
 				<ee:set-payload resource="dw/validate-input.dwl" />
 			</ee:message>
 		</ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b570a235-5c65-45f7-a07a-93570315b493" >
+					<ee:transform doc:name="Set Error Message" doc:id="bc146cc5-9ab1-4a50-9e57-61a732fd1849" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: 400,
+  error: "Validation failed",
+  details: "Unable to parse the input"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<set-variable value="#[payload.status]" doc:name="httpStatus" doc:id="eb8d0849-6b51-4dda-90c4-87a9b4f17042" variableName="httpStatus" />
 	</sub-flow>
+
 </mule>

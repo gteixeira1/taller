@@ -1,13 +1,14 @@
 %dw 2.0
 output application/json
-import * from dw::core::Numbers
 import * from dw::Runtime
+
+var currentDate = now() // replace with now() when running live
 
 // Helper: safe parse date in common formats, return null if fails
 fun parseDate(d) =
   if (d == null) null
   else
-    do {
+    (do {
       var attempts = [
           //try(() -> user.name!) orElse "No User Name",
         (try (() -> (d as Date {format: "yyyy-MM-dd"})) orElse null),
@@ -16,16 +17,22 @@ fun parseDate(d) =
         (try (() -> (d as Date)) orElse null)
       ]
       ---
-      (attempts filter ($ != null))[0] default null
-    } // first successful or null
+      (attempts filter ($ != null)) default null
+    })[0] // first successful or null
 
 // Compute age in years
 fun ageFrom(d) =
   if (d == null) null
   else
     do {
-      var years = now.year - d.year - (
-      	if((now.month < d.month) or ((now.month == d.month) and (now.day < d.day))) 1
+      var years = currentDate.year - d.year - (
+      	if(
+              ((currentDate.month) < d.month) or 
+              (
+                (currentDate.month == d.month) and 
+                (currentDate.day < d.day)
+              )
+        ) 1
 		else 0
       )
       ---
@@ -36,7 +43,7 @@ fun ageFrom(d) =
 fun trimLower(s) = if (s == null) null else lower(trim((s as String)))
 fun trimCap(s) = if (s == null) null else trim(s as String)
 
-var now = |2026-06-18| as Date // replace with now() when running live
+
 
 var src = (payload) // payload will be the incoming JSON or XML parsed into DataWeave object
 
@@ -71,7 +78,7 @@ var errors = [
         "email is required"
       else null
   )
-]
+] filter !isEmpty($)
 
 ---
 if (sizeOf(errors) > 0) {
@@ -84,7 +91,7 @@ else do {
   var parsedDob = parseDate(dobRaw)
   var dobErrors = if (dobRaw != null and parsedDob == null) ["dateOfBirth could not be parsed"] else []
   ---
-  if (sizeOf(dobErrors)  > 0) {
+  if (sizeOf(dobErrors) > 0) {
     status: 400,
     error: "Validation failed",
     details: dobErrors
@@ -111,7 +118,7 @@ else do {
         },
         sourceMeta: {
           sourceSystem: src.sourceSystem default null,
-          receivedAt: |2026-06-18T00:00:00Z| as DateTime // placeholder; in Mule use now() formatted
+          receivedAt: currentDate
         }
       }
     }

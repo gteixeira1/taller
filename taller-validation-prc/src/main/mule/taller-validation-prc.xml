@@ -123,6 +123,7 @@ output application/json
         <flow-ref doc:name="validate-input" doc:id="d93c4cd5-a3a4-460b-b608-4dbecd7b1710" name="validate-input"/>
     </flow>
     <flow name="post:\customers\process:application\xml:taller-validation-prc-config">
+		<set-payload value="#[output application/json --- payload.Customer]" doc:name="Set Customer to Payload" doc:id="29c7bd26-23e0-40d8-a154-3f5a4ccca907" />
 		<flow-ref doc:name="validate-input" doc:id="30cb948e-1a02-4ff5-b692-3bbc7d590e6c" name="validate-input" />
     </flow>
 </mule>

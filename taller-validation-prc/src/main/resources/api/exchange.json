@@ -1,0 +1,13 @@
+{
+  "main": "taller-validation-prc.raml",
+  "name": "taller-validation-prc",
+  "groupId": "1f74fffc-a8d5-4716-8372-aa2221f7745c",
+  "assetId": "taller-validation-prc",
+  "version": "1.0.1",
+  "classifier": "raml",
+  "tags": [],
+  "descriptorVersion": "1.0.0",
+  "organizationId": "1f74fffc-a8d5-4716-8372-aa2221f7745c",
+  "apiVersion": "v1",
+  "originalFormatVersion": "1.0"
+}

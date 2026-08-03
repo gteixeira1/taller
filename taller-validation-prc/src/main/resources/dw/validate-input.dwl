@@ -1,6 +1,7 @@
 %dw 2.0
 output application/json
 import * from dw::core::Numbers
+import * from dw::Runtime
 
 // Helper: safe parse date in common formats, return null if fails
 fun parseDate(d) =
@@ -8,10 +9,11 @@ fun parseDate(d) =
   else
     do {
       var attempts = [
-        try (() -> d as Date {format: "yyyy-MM-dd"})) orElse null,
-        try (d as Date {format: "dd/MM/yyyy"}) catch null,
-        try (d as Date {format: "MM-dd-yyyy"}) catch null,
-        try (d as Date) catch null
+          //try(() -> user.name!) orElse "No User Name",
+        (try (() -> (d as Date {format: "yyyy-MM-dd"})) orElse null),
+        (try (() -> (d as Date {format: "dd/MM/yyyy"})) orElse null),
+        (try (() -> (d as Date {format: "MM-dd-yyyy"})) orElse null),
+        (try (() -> (d as Date)) orElse null)
       ]
       ---
       (attempts filter ($ != null))[0] default null

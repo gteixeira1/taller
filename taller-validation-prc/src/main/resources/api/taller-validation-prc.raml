@@ -1,0 +1,16 @@
+#%RAML 1.0
+title: taller-validation-prc
+
+
+
+/customers/process:
+  post:
+    body:
+      application/json:
+      application/xml:
+    responses:
+      200:
+        body:
+          application/json:
+            type: !include customer-canonical.raml
+      400:
